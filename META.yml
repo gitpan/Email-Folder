@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Email-Folder
-version: 0.5
+version: 0.6
 license: perl
 distribution_type: module
 requires:
@@ -13,7 +13,13 @@ conflicts: {}
 provides:
   Email::Folder:
     file: lib/Email/Folder.pm
-    version: 0.5
+    version: 0.6
+  Email::Folder::Maildir:
+    file: lib/Email/Folder/Maildir.pm
+    version: ~
+  Email::Folder::Mbox:
+    file: lib/Email/Folder/Mbox.pm
+    version: ~
   Email::Folder::Reader:
     file: lib/Email/Folder/Reader.pm
     version: ~

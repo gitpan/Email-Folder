@@ -1,3 +1,6 @@
+0.6 Sunday 11th May, 2003
+    Release with a auto-generated Makefile.PL, for CPAN.pm users
+
 0.5 Tuesday 29th April, 2003
     Add iterator interface, plus move the backends to be classes
 
