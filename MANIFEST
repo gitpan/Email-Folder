@@ -5,11 +5,13 @@ lib/Email/Folder/Maildir.pm
 MANIFEST
 META.yml
 Build.PL
-SIGNATURE
 TODO
 t/01mbox.t
 t/02maildir.t
 t/testmbox
+t/testmbox.mac
+t/testmbox.dos
+t/testmbox.empty
 t/testmaildir/new/1050314226.9981_1.penfold
 t/testmaildir/tmp/1050314226.9981_8.penfold
 t/testmaildir/cur/1050314226.9981_11.penfold:2,
