@@ -1,5 +1,6 @@
 Changes
 lib/Email/Folder.pm
+lib/Email/Folder/Ezmlm.pm
 lib/Email/Folder/Mbox.pm
 lib/Email/Folder/Maildir.pm
 lib/Email/Folder/Reader.pm

@@ -1,26 +1,25 @@
 --- #YAML:1.0
 name: Email-Folder
-version: 0.8
+version: 0.82
+author:
+  - ~
+abstract: |-
+  read all the messages from a folder as Email::Simple objects.
 license: perl
-distribution_type: module
 requires:
-  Email::FolderType: 0
+  Email::FolderType: 0.6
   Email::Simple: 0
   Test::More: 0
-recommends: {}
-build_requires: {}
-conflicts: {}
 provides:
   Email::Folder:
     file: lib/Email/Folder.pm
-    version: 0.8
+    version: 0.82
+  Email::Folder::Ezmlm:
+    file: lib/Email/Folder/Ezmlm.pm
   Email::Folder::Maildir:
     file: lib/Email/Folder/Maildir.pm
-    version: ~
   Email::Folder::Mbox:
     file: lib/Email/Folder/Mbox.pm
-    version: ~
   Email::Folder::Reader:
     file: lib/Email/Folder/Reader.pm
-    version: ~
-generated_by: Module::Build version 0.18
+generated_by: Module::Build version 0.24

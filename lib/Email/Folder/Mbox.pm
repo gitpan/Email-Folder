@@ -34,7 +34,7 @@ The new constructor takes extra options.
 
 This indicates what the line-ending style is to be.  The default is
 C<"\n">, but for handling files with mac line-endings you would want
-to specify C<eol => "\x0d">
+to specify C<eol =E<gt> "\x0d">
 
 =item C<jwz_From_>
 
@@ -72,6 +72,11 @@ Harmful|http://www.jwz.org/doc/content-length.html>
 
 Defaults to false.
 
+=item C<seek_to>
+
+Seek to an offset when opening the mbox.  When used in combination with
+->tell you may be able to resume reading, with a trailing wind.
+
 =back
 
 =cut
@@ -91,9 +96,15 @@ sub _open_it {
     local $/ = $self->{eol};
     my $fh = IO::File->new($file) or croak "Cannot open $file";
 
-    my $firstline = <$fh>;
-    if ($firstline) {
-        croak "$file is not an mbox file" unless $firstline =~ /^From /;
+    if ($self->{seek_to}) {
+        # we were told to seek.  hope it all goes well
+        seek $fh, $self->{seek_to}, 0;
+    }
+    else {
+        my $firstline = <$fh>;
+        if ($firstline) {
+            croak "$file is not an mbox file" unless $firstline =~ /^From /;
+        }
     }
 
     $self->{_fh} = $fh;
@@ -171,6 +182,11 @@ sub next_message {
     print "$count end of message line $.\n" if debug;
     return unless $mail;
     return $mail;
+}
+
+sub tell {
+    my $self = shift;
+    return tell $self->{_fh};
 }
 
 1;

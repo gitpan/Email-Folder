@@ -29,7 +29,7 @@ sub _what_is_there {
     croak "$dir does not exist"    unless (-e $dir);
     croak "$dir is not a maildir"  unless (-d $dir);
     croak "$dir is not a maildir"  unless (-e "$dir/cur" && -d "$dir/cur");
-    croak "$dir is not a maildir"  unless (-e "$dir/cur" && -d "$dir/new");
+    croak "$dir is not a maildir"  unless (-e "$dir/new" && -d "$dir/new");
 
     my @messages;
     # ignore the tmp directory although the spec

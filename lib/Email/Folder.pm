@@ -5,7 +5,7 @@ use Email::Simple;
 use Email::FolderType qw/folder_type/;
 
 use vars qw($VERSION);
-$VERSION = "0.8";
+$VERSION = "0.82";
 
 =head1 NAME
 
@@ -17,13 +17,16 @@ Email::Folder - read all the messages from a folder as Email::Simple objects.
 
  my $folder = Email::Folder->new("some_file");
 
- print join "\n", map { $_->header("Subject") }, $folder->messages;
+ print join "\n", map { $_->header("Subject") } $folder->messages;
 
 =head1 METHODS
 
 =head2 new($folder, %options)
 
 Takes the name of a folder, and a hash of options
+
+If a 'reader' option is passed in then that is
+used as the class to read in messages with.
 
 =cut
 
@@ -32,14 +35,19 @@ sub new {
     my $folder = shift || carp "Must provide a folder name\n";
     my %self = @_;
 
-    my $reader = "Email::Folder::".folder_type($folder);
+    my $reader;
+
+    if ($self{reader}) {
+        $reader = $self{reader};
+    } else {
+        $reader = "Email::Folder::".folder_type($folder);
+    }
     eval "require $reader" or die $@;
 
     $self{_folder} = $reader->new($folder, @_);
 
     return bless \%self, $class;
 }
-
 
 =head2 messages
 
@@ -99,6 +107,17 @@ sub bless_message {
     return Email::Simple->new($message);
 }
 
+
+=head2 reader
+
+read-only accessor to the underlying Email::Reader subclass instance
+
+=cut
+
+sub reader {
+    my $self = shift;
+    return $self->{_folder};
+}
 
 1;
 

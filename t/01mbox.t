@@ -3,7 +3,7 @@ my %boxes;
 BEGIN { %boxes = ( 't/testmbox'      => "\x0a",
                    't/testmbox.mac'  => "\x0d",
                    't/testmbox.dos'  => "\x0d\x0a" ) }
-use Test::More tests => 9 + 3 * keys %boxes;
+use Test::More tests => 12 + 3 * keys %boxes;
 use strict;
 
 use_ok("Email::Folder");
@@ -60,4 +60,16 @@ is_deeply( [ sort map { $_->header('Subject') } @messages ],
              'Re: Fifteenth anniversary of Perl.',
             ],
            "they're the messages we expected");
+
+my $r = Email::Folder->new('t/mboxcl2');
+is( $r->next_message->header('Subject'), 'Fifteenth anniversary of Perl.',
+    'iterate first message' );
+
+# take the offset and close it
+my $offset = $r->reader->tell;
+undef $r;
+
+ok( $r = Email::Folder->new('t/mboxcl2', seek_to => $offset), "reopened");
+is( $r->next_message->header('Subject'), 'Re: Fifteenth anniversary of Perl.',
+    'second message' );
 
