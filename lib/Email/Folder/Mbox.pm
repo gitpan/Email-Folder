@@ -94,7 +94,7 @@ sub _open_it {
     croak "$file is not a file"  unless (-f $file);
 
     local $/ = $self->{eol};
-    my $fh = IO::File->new($file) or croak "Cannot open $file";
+    my $fh = $self->_get_fh($file);
 
     if ($self->{seek_to}) {
         # we were told to seek.  hope it all goes well
@@ -108,6 +108,13 @@ sub _open_it {
     }
 
     $self->{_fh} = $fh;
+}
+
+sub _get_fh {
+	my $self = shift;
+	my $file = shift;
+	my $fh = IO::File->new($file) or croak "Cannot open $file";
+	return $fh;
 }
 
 use constant debug => 0;

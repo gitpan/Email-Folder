@@ -5,9 +5,9 @@ WriteMakefile
           'NAME' => 'Email::Folder',
           'VERSION_FROM' => 'lib/Email/Folder.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0,
-                           'Email::Simple' => 0,
-                           'Email::FolderType' => '0.6'
+                           'Email::FolderType' => '0.6',
+                           'Email::Simple' => '0',
+                           'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
           'PL_FILES' => {}
