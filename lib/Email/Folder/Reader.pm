@@ -22,7 +22,7 @@ or, as an iterator
 
 =head1 METHODS
 
-=head2 ->new($filename)
+=head2 ->new($filename, %options)
 
 your standard class-method constructor
 
@@ -31,7 +31,9 @@ your standard class-method constructor
 sub new {
     my $class = shift;
     my $file  = shift || croak "You must pass a filename";
-    bless { _file => $file }, $class;
+    bless { eval { $class->defaults },
+            @_,
+            _file => $file }, $class;
 }
 
 =head2 ->next_message

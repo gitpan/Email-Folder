@@ -6,7 +6,7 @@ use Email::Simple;
 use Email::FolderType qw/folder_type/;
 
 use vars qw($VERSION);
-$VERSION = "0.6";
+$VERSION = "0.7";
 
 =head1 NAME
 
@@ -22,9 +22,9 @@ Email::Folder - read all the messages from a folder.
 
 =head1 METHODS
 
-=head2 new($folder)
+=head2 new($folder, %options)
 
-Takes the name of a folder;
+Takes the name of a folder, and a hash of options
 
 =cut
 
@@ -37,7 +37,7 @@ sub new {
     my $reader = "Email::Folder::".folder_type($folder);
     eval "require $reader" or die $@;
 
-    $self{_folder} = $reader->new($folder);
+    $self{_folder} = $reader->new($folder, @_);
 
     return bless \%self, $class;
 }
@@ -93,9 +93,11 @@ sub next_message {
 
 __END__
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Simon Wistow <simon@thegestalt.org>
+
+Richard Clamp <richardc@unixbeard.net>
 
 =head1 COPYING
 

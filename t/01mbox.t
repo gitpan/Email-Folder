@@ -1,14 +1,16 @@
 #!perl -w
-my @boxes;
-BEGIN { @boxes = qw( t/testmbox t/testmbox.mac t/testmbox.dos ) }
-use Test::More tests => 3 + 3 * @boxes;
+my %boxes;
+BEGIN { %boxes = ( 't/testmbox'      => "\x0a",
+                   't/testmbox.mac'  => "\x0d",
+                   't/testmbox.dos'  => "\x0d\x0a" ) }
+use Test::More tests => 6 + 3 * keys %boxes;
 use strict;
 
 use_ok("Email::Folder");
 
-for my $box (@boxes) {
+for my $box (keys %boxes) {
     my $folder;
-    ok($folder = Email::Folder->new($box), "opened $box");
+    ok($folder = Email::Folder->new($box, eol => $boxes{$box}), "opened $box");
 
     my @messages = $folder->messages;
     is(@messages, 10, "grabbed 10 messages");
@@ -34,8 +36,16 @@ for my $box (@boxes) {
 
 my $folder;
 ok($folder = Email::Folder->new('t/testmbox.empty'), "opened testmbox.empty");
-
-
 is($folder->messages, 0);
 
+ok($folder = Email::Folder->new('t/mboxcl2'), "opened mboxcl2");
+my @messages = $folder->messages;
+
+is(@messages, 3);
+is_deeply( [ sort map { $_->header('Subject') } @messages ],
+           [ 'Fifteenth anniversary of Perl.',
+             'Re: Fifteenth anniversary of Perl.',
+             'Re: Fifteenth anniversary of Perl.',
+            ],
+           "they're the messages we expected");
 

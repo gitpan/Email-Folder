@@ -9,6 +9,7 @@ Module::Build
              'Email::Simple' => 0,
              'Email::FolderType' => 0,
          },
+         sign        => 1,
          create_makefile_pl => 'traditional',
         )
   ->create_build_script;

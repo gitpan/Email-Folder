@@ -20,18 +20,20 @@ mbox.
 
 The mbox format is described at http://www.qmail.org/man/man5/mbox.html
 
+We attempt to read an mbox as through it's the mboxcl2 variant,
+falling back to regular mbox mode if there is no C<Content-Length>
+header to be found.
+
+=head2 OPTIONS
+
+The new constructor takes one extra option, C<eol>.  This indicates
+what the line-ending style is to be.  The default is C<"\n">, but for
+say handling files with mac line-endings you would specify C<eol => "\x0d">
+
 =cut
 
-# figure out what EOL looks like here
-sub _guess_eol {
-    my $file = shift;
-    my $fh = IO::File->new($file) or return;
-    my $match = '';
-    while ( $fh->read( my $chunk, 20 ) ) {
-        $match .= $chunk;
-        return $1 if $match =~ m/(\x0a\x0d|\x0d\x0a|\x0a|\x0d)/;
-    }
-    return;
+sub defaults {
+    ( eol => "\n")
 }
 
 sub _open_it {
@@ -42,8 +44,7 @@ sub _open_it {
     croak "$file does not exist" unless (-e $file);
     croak "$file is not a file"  unless (-f $file);
 
-    local $/ = $self->{_eol} = _guess_eol $file;
-
+    local $/ = $self->{eol};
     my $fh = IO::File->new($file) or croak "Cannot open $file";
 
     my $firstline = <$fh>;
@@ -58,11 +59,29 @@ sub next_message {
     my $self = shift;
 
     my $fh = $self->{_fh} || $self->_open_it;
-    local $/ = $self->{_eol};
+    local $/ = $self->{eol};
 
     my $mail = '';
     my $prev = '';
+    my $inheaders = 1;
     while (<$fh>) {
+        if ($_ eq $/ && $inheaders) { # end of headers
+            $inheaders = 0; # stop looking for the end of headers
+            # look for a content length header, and follow that
+            if ($mail =~ m/^Content-Length: (\d+)$/mi) {
+                my $length = $1;
+                my $read = '';
+                while (<$fh>) {
+                    last if length $read == $length;
+                    $read .= $_;
+                }
+                # grab the next line (should be /^From / or undef)
+                my $next = <$fh>;
+                die "Content-Length assertion failed"
+                  unless !defined $next || $next =~ /^From /;
+                return "$mail$/$read";
+            }
+        }
         last if /^From /;  # start of the next message
         $mail .= $prev;
         $prev = $_;

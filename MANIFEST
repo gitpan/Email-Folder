@@ -5,11 +5,13 @@ lib/Email/Folder/Maildir.pm
 lib/Email/Folder/Reader.pm
 MANIFEST
 META.yml
+SIGNATURE
 Build.PL
 Makefile.PL
 TODO
 t/01mbox.t
 t/02maildir.t
+t/mboxcl2
 t/testmbox
 t/testmbox.mac
 t/testmbox.dos
