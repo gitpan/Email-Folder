@@ -1,16 +1,15 @@
 use strict;
 package Email::Folder;
 use Carp;
-use IO::File;
 use Email::Simple;
 use Email::FolderType qw/folder_type/;
 
 use vars qw($VERSION);
-$VERSION = "0.7";
+$VERSION = "0.8";
 
 =head1 NAME
 
-Email::Folder - read all the messages from a folder.
+Email::Folder - read all the messages from a folder as Email::Simple objects.
 
 =head1 SYNOPSIS
 
@@ -18,7 +17,7 @@ Email::Folder - read all the messages from a folder.
 
  my $folder = Email::Folder->new("some_file");
 
- print join "\n", map { $_->header("Subject") }, $folder->messages();
+ print join "\n", map { $_->header("Subject") }, $folder->messages;
 
 =head1 METHODS
 
@@ -27,7 +26,6 @@ Email::Folder - read all the messages from a folder.
 Takes the name of a folder, and a hash of options
 
 =cut
-
 
 sub new {
     my $class  = shift;
@@ -42,25 +40,11 @@ sub new {
     return bless \%self, $class;
 }
 
-=head2 bless_message($message)
-
-Takes a raw RFC822 message and blesses it into a class.
-
-By default this is an Email::Simple object but could be overwritten.
-
-=cut
-
-sub bless_message {
-    my $self    = shift;
-    my $message = shift || die "You must pass a message\n";
-
-    return Email::Simple->new($message);
-}
-
 
 =head2 messages
 
-Returns a list containing all the messages in a folder
+Returns a list containing all of the messages in the folder.  Can only
+be called once as it drains the iterator.
 
 =cut
 
@@ -75,6 +59,7 @@ sub messages {
     return @ret;
 }
 
+
 =head2 next_message
 
 acts as an iterator.  reads the next message from a folder.  returns
@@ -88,6 +73,32 @@ sub next_message {
     my $body = $self->{_folder}->next_message or return;
     $self->bless_message( $body );
 }
+
+
+=head2 bless_message($message)
+
+Takes a raw RFC822 message and blesses it into a class.
+
+By default this is an Email::Simple object but can easily be overriden
+in a subclass.
+
+For example, this simple subclass just returns the raw rfc822 messages,
+and exposes the speed of the parser.
+
+ package Email::RawFolder;
+ use base 'Email::Folder';
+ sub bless_message { $_[1] };
+ 1;
+
+=cut
+
+sub bless_message {
+    my $self    = shift;
+    my $message = shift || die "You must pass a message\n";
+
+    return Email::Simple->new($message);
+}
+
 
 1;
 
@@ -107,7 +118,6 @@ Distributed under the same terms as Perl itself.
 
 This software is under no warranty and will probably ruin your life,
 kill your friends, burn your house and bring about the doobie brothers.
-
 
 =head1 SEE ALSO
 

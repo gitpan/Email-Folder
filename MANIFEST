@@ -12,6 +12,7 @@ TODO
 t/01mbox.t
 t/02maildir.t
 t/mboxcl2
+t/mboxcl2.lies
 t/testmbox
 t/testmbox.mac
 t/testmbox.dos

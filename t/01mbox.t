@@ -3,7 +3,7 @@ my %boxes;
 BEGIN { %boxes = ( 't/testmbox'      => "\x0a",
                    't/testmbox.mac'  => "\x0d",
                    't/testmbox.dos'  => "\x0d\x0a" ) }
-use Test::More tests => 6 + 3 * keys %boxes;
+use Test::More tests => 9 + 3 * keys %boxes;
 use strict;
 
 use_ok("Email::Folder");
@@ -40,6 +40,18 @@ is($folder->messages, 0);
 
 ok($folder = Email::Folder->new('t/mboxcl2'), "opened mboxcl2");
 my @messages = $folder->messages;
+
+is(@messages, 3);
+is_deeply( [ sort map { $_->header('Subject') } @messages ],
+           [ 'Fifteenth anniversary of Perl.',
+             'Re: Fifteenth anniversary of Perl.',
+             'Re: Fifteenth anniversary of Perl.',
+            ],
+           "they're the messages we expected");
+
+# mboxcl2 with a lying Content-Length header
+ok($folder = Email::Folder->new('t/mboxcl2.lies'), "opened mboxcl2.lies");
+@messages = $folder->messages;
 
 is(@messages, 3);
 is_deeply( [ sort map { $_->header('Subject') } @messages ],

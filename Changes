@@ -1,3 +1,14 @@
+0.8 Unreleased
+    mboxcl2 handling is now a little more paranoid, and will recover from 
+    bad values
+
+    Mbox.pm now expects the From_ line to match either of
+        /^From (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
+        /^From \S+\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
+    (based on mutt mbox.c/from.c)
+
+    Document that ->messages is a one-shot operation.
+
 0.7 Tuesday 27th May, 2003
     Mbox.pm can grok mboxcl2
 

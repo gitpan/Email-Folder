@@ -26,9 +26,53 @@ header to be found.
 
 =head2 OPTIONS
 
-The new constructor takes one extra option, C<eol>.  This indicates
-what the line-ending style is to be.  The default is C<"\n">, but for
-say handling files with mac line-endings you would specify C<eol => "\x0d">
+The new constructor takes extra options.
+
+=over
+
+=item C<eol>
+
+This indicates what the line-ending style is to be.  The default is
+C<"\n">, but for handling files with mac line-endings you would want
+to specify C<eol => "\x0d">
+
+=item C<jwz_From_>
+
+The value is taken as a boolean that governs what is used match as a
+message seperator.
+
+If false we use the mutt style
+
+ /^From \S+\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
+ /^From (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/;
+
+If true we use
+
+ /^From /
+
+In deference to this extract from L<Content-Length Considered
+Harmful|http://www.jwz.org/doc/content-length.html>
+
+ Essentially the only safe way to parse that file format is to
+ consider all lines which begin with the characters ``From ''
+ (From-space), which are preceded by a blank line or
+ beginning-of-file, to be the division between messages.  That is, the
+ delimiter is "\n\nFrom .*\n" except for the very first message in the
+ file, where it is "^From .*\n".
+
+ Some people will tell you that you should do stricter parsing on
+ those lines: check for user names and dates and so on.  They are
+ wrong.  The random crap that has traditionally been dumped into that
+ line is without bound; comparing the first five characters is the
+ only safe and portable thing to do. Usually, but not always, the next
+ token on the line after ``From '' will be a user-id, or email
+ address, or UUCP path, and usually the next thing on the line will be
+ a date specification, in some format, and usually there's nothing
+ after that.  But you can't rely on any of this.
+
+Defaults to false.
+
+=back
 
 =cut
 
@@ -55,6 +99,9 @@ sub _open_it {
     $self->{_fh} = $fh;
 }
 
+use constant debug => 0;
+my $count;
+
 sub next_message {
     my $self = shift;
 
@@ -64,28 +111,64 @@ sub next_message {
     my $mail = '';
     my $prev = '';
     my $inheaders = 1;
+    ++$count;
+    print "$count starting scanning at line $.\n" if debug;
     while (<$fh>) {
         if ($_ eq $/ && $inheaders) { # end of headers
+            print "$count end of headers at line $.\n" if debug;
             $inheaders = 0; # stop looking for the end of headers
-            # look for a content length header, and follow that
+            my $pos = tell $fh; # where to go back to if it goes wrong
+            # look for a content length header, and try to use that
             if ($mail =~ m/^Content-Length: (\d+)$/mi) {
                 my $length = $1;
+                print " Content-Length: $length\n" if debug;
                 my $read = '';
                 while (<$fh>) {
-                    last if length $read == $length;
+                    last if length $read >= $length;
                     $read .= $_;
                 }
                 # grab the next line (should be /^From / or undef)
                 my $next = <$fh>;
-                die "Content-Length assertion failed"
-                  unless !defined $next || $next =~ /^From /;
-                return "$mail$/$read";
+                return "$mail$/$read"
+                  if !defined $next || $next =~ /^From /;
+                # seek back and scan line-by-line like the header
+                # wasn't here
+                print " Content-Length assertion failed '$next'\n" if debug;
+                seek $fh, $pos, 0;
+            }
+            # much the same, but with Lines:
+            if ($mail =~ m/^Lines: (\d+)$/mi) {
+                my $lines = $1;
+                print " Lines: $lines\n" if debug;
+                my $read = '';
+                for (1..$lines) { $read .= <$fh> }
+                <$fh>; # trailing newline
+                my $next = <$fh>;
+                return "$mail$/$read"
+                  if !defined $next || $next =~ /^From /;
+                # seek back and scan line-by-line like the header
+                # wasn't here
+                print " Lines assertion failed '$next'\n" if debug;
+                seek $fh, $pos, 0;
             }
         }
-        last if /^From /;  # start of the next message
+        if (!$self->{jwz_From_}) {
+            # according to mutt:
+            #   A valid message separator looks like:
+            #   From [ <return-path> ] <weekday> <month> <day> <time> [ <timezone> ] <year>
+            last if $prev eq $/ && (
+                /^From \S+\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/ ||
+                /^From (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
+                    );
+        }
+        else {
+            # though, as jwz rants, only this is reliable and portable
+            last if $prev eq $/ && /^From /;
+        }
         $mail .= $prev;
         $prev = $_;
     }
+    print "$count end of message line $.\n" if debug;
     return unless $mail;
     return $mail;
 }
@@ -94,9 +177,11 @@ sub next_message {
 
 __END__
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Simon Wistow <simon@thegestalt.org>
+
+Richard Clamp <richardc@unixbeard.net>
 
 =head1 COPYING
 

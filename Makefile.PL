@@ -1,7 +1,7 @@
     use ExtUtils::MakeMaker;
     WriteMakefile
       ('DISTNAME' => 'Email-Folder',
-       'VERSION' => '0.7',
+       'VERSION' => '0.8',
        'PL_FILES' => {},
        'PREREQ_PM' => {
 			'Test::More' => '0',
