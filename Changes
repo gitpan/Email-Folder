@@ -1,2 +1,8 @@
+0.3 Tuesday 22nd April, 2003
+    Just another release of 0.2, now that CPAN repects my authoritay!
+
+0.2 Tuesday 22nd April, 2003
+    Lose the (hidden) dependency on UNIVERSAL::require
+
 0.1 Initial version
     Very rough idea

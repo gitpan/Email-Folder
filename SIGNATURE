@@ -15,10 +15,10 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 a3e1b0b812f23fc48103b154d1842c50e71299ce Build.PL
-SHA1 8242ee8e7061eae8bfc3770d9b6ce95f90fcf4b3 Changes
+SHA1 372bb16233c772fb41eb6141d5e9be535cfdc92f Changes
 SHA1 f5ecb5fa86256feaae97ec4f74982f4b95f0d4a9 MANIFEST
 SHA1 7e9cc0a2374e9ccc6e41e174f68e76212fc5181d TODO
-SHA1 e8f846340baf809f99a382cefdc8218d8bc5406c lib/Email/Folder.pm
+SHA1 7e59ad3973ab9f49339f4df40c7d61a77b606cb2 lib/Email/Folder.pm
 SHA1 59f8fad008b47660a9d16bb8b4aa5a326870f516 lib/Email/Folder/Maildir.pm
 SHA1 9f31b93751eee91763ec2b2d903d482e1078399f lib/Email/Folder/Mbox.pm
 SHA1 b1cb1fde3bec147876d29c57034ede4ebb134ad9 t/01mbox.t
@@ -38,7 +38,7 @@ SHA1 074078d175671bd57cd55b384ca5ebcb82719d9d t/testmbox
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+pR5VLtfcZtsytAYRAopiAJ9aQiqIosXJpAWmZbP9Y/zBLSXK5QCeL7ul
-VpiLM701QbUa8GEyYuMNsXs=
-=PD+U
+iD8DBQE+pS95LtfcZtsytAYRAqdlAKC74wshAoR51vwK//MNH9l9c2xnLwCeKIkj
+PDpG9+b7mCURMSD2cJc05VY=
+=sNfE
 -----END PGP SIGNATURE-----
