@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Email-Folder
-version: 0.82
+version: 0.83
 author:
   - ~
 abstract: |-
@@ -13,7 +13,7 @@ requires:
 provides:
   Email::Folder:
     file: lib/Email/Folder.pm
-    version: 0.82
+    version: 0.83
   Email::Folder::Ezmlm:
     file: lib/Email/Folder/Ezmlm.pm
   Email::Folder::Maildir:
