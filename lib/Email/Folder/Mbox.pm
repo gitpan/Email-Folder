@@ -2,6 +2,8 @@ package Email::Folder::Mbox;
 use strict;
 use Carp;
 use IO::File;
+use Email::Folder::Reader;
+use base 'Email::Folder::Reader';
 
 =head1 NAME
 
@@ -9,24 +11,14 @@ Email::Folder::Mbox - reads raw RFC822 mails from an mbox file
 
 =head1 SYNOPSIS
 
- use Email::Folder::Mbox;
- print Email::Folder::Mbox->messages('somembox');
+This isa Email::Folder::Reader - read about its API there.
 
 =head1 DESCRIPTION
 
-Does exactly what it says on the tin - fetches raw RFC822 mails from
-an mbox.
+Does exactly what it says on the tin - fetches raw RFC822 mails from an
+mbox.
 
 The mbox format is described at http://www.qmail.org/man/man5/mbox.html
-
-=head1 METHODS
-
-=head2 messages <class> <dir>
-
-Takes the name of an mbox file, returns a list of B<Email::Simple>
-objects.
-
-Should really only be called from B<Email::Folder>.
 
 =cut
 
@@ -42,49 +34,42 @@ sub _guess_eol {
     return;
 }
 
-sub messages {
-    my $class = shift;
-    my $file  = shift || croak "You must pass a filename";
+sub _open_it {
+    my $self = shift;
+    my $file = $self->{_file};
 
     # sanity checking
     croak "$file does not exist" unless (-e $file);
     croak "$file is not a file"  unless (-f $file);
 
-    # if it's empty then return nothing
-	return () if ((stat($file))[7] == 0);
+    local $/ = $self->{_eol} = _guess_eol $file;
 
-    local $/ = _guess_eol $file;
-
-    # is this a mbox file?
     my $fh = IO::File->new($file) or croak "Cannot open $file";
-    croak "$file is not an mbox file" unless $fh->getline =~ /^From /;
 
-    my $message;
-    my $lastline = '';
-    my @messages;
-    while (<$fh>) {
-        # start of a new message?
-        if (/^From /) {
-            # then create a new Email::Simple object
-            push @messages, $message;
-            # reset the message
-            $message = "";
-            # dump the last line (it was blank)
-            $lastline = "";
-            # and continue where we left off
-            next;
-        }
-        # it wasn't, so we stick it on the end of the message
-        $message .= $lastline;
-        # and store this line
-        $lastline = $_;
+    my $firstline = <$fh>;
+    if ($firstline) {
+        croak "$file is not an mbox file" unless $firstline =~ /^From /;
     }
-    # grab the last message (without last, blank, line)
-    push @messages, $message;
 
-    return @messages;
+    $self->{_fh} = $fh;
 }
 
+sub next_message {
+    my $self = shift;
+
+    my $fh = $self->{_fh} || $self->_open_it;
+    local $/ = $self->{_eol};
+
+    my $mail = '';
+    my $prev = '';
+    while (<$fh>) {
+        last if /^From /;  # start of the next message
+        $mail .= $prev;
+        $prev = $_;
+    }
+    return unless $mail;
+    return $mail;
+}
 
 1;
 
@@ -96,7 +81,7 @@ Simon Wistow <simon@thegestalt.org>
 
 =head1 COPYING
 
-(C)opyright 2003, Simon Wistow
+Copyright 2003, Simon Wistow
 
 Distributed under the same terms as Perl itself.
 

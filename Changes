@@ -1,3 +1,6 @@
+0.5 Tuesday 29th April, 2003
+    Add iterator interface, plus move the backends to be classes
+
 0.4 Thursday 24th April, 2003
     Add line-ending detection to Email::Folder::MBox
     temporarily disable signing, as it's confusing

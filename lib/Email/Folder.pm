@@ -1,17 +1,16 @@
-package Email::Folder;
-
 use strict;
+package Email::Folder;
 use Carp;
 use IO::File;
 use Email::Simple;
 use Email::FolderType qw/folder_type/;
 
 use vars qw($VERSION);
-$VERSION = "0.4";
+$VERSION = "0.5";
 
 =head1 NAME
 
-Email::Folder -
+Email::Folder - read all the messages from a folder.
 
 =head1 SYNOPSIS
 
@@ -23,7 +22,7 @@ Email::Folder -
 
 =head1 METHODS
 
-=head2 new <folder>
+=head2 new($folder)
 
 Takes the name of a folder;
 
@@ -33,17 +32,17 @@ Takes the name of a folder;
 sub new {
     my $class  = shift;
     my $folder = shift || carp "Must provide a folder name\n";
-    my %self   = @_;
+    my %self = @_;
 
-    carp "'$folder' does not exist\n" unless (-e $folder);
+    my $reader = "Email::Folder::".folder_type($folder);
+    eval "require $reader" or die $@;
 
-    $self{_folder} = $folder;
-    $self{_type}   = folder_type($folder);
+    $self{_folder} = $reader->new($folder);
 
     return bless \%self, $class;
 }
 
-=head2 bless_message <message>
+=head2 bless_message($message)
 
 Takes a raw RFC822 message and blesses it into a class.
 
@@ -61,24 +60,38 @@ sub bless_message {
 
 =head2 messages
 
-Returns a list of all the messages in a folder
+Returns a list containing all the messages in a folder
 
 =cut
 
 sub messages {
     my $self = shift;
-    return @{$self->{_messages}} if defined $self->{_messages};
 
-    my $type = $self->{_type};
-    my $class = "Email::Folder::$type";
-    eval "require $class";
-    $class->can('messages') || croak "$class does not have method 'messages'";
-
-    my @messages = map { $self->bless_message($_) } $class->messages($self->{_folder});
-    $self->{_messages} = \@messages;
-
-    return @{$self->{_messages}};
+    my @messages = $self->{_folder}->messages;
+    my @ret;
+    while (my $body = shift @messages) {
+        push @ret, $self->bless_message( $body );
+    }
+    return @ret;
 }
+
+=head2 next_message
+
+acts as an iterator.  reads the next message from a folder.  returns
+false at the end of the folder
+
+=cut
+
+sub next_message {
+    my $self = shift;
+
+    my $body = $self->{_folder}->next_message or return;
+    $self->bless_message( $body );
+}
+
+1;
+
+__END__
 
 =head1 AUTHOR
 
@@ -90,13 +103,12 @@ Copyright 2003, Simon Wistow
 
 Distributed under the same terms as Perl itself.
 
-This software is under no warranty and will probably ruin your life, kill your friends, burn your house and brin$
+This software is under no warranty and will probably ruin your life,
+kill your friends, burn your house and bring about the doobie brothers.
 
 
 =head1 SEE ALSO
 
-L<Email::LocalDelivery>, L<Email::Folder>, L<Email::Simple>
+L<Email::LocalDelivery>, L<Email::FolderType>, L<Email::Simple>
 
 =cut
-
-1;
