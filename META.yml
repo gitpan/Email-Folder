@@ -1,0 +1,23 @@
+--- #YAML:1.0
+name: Email-Folder
+version: 0.1
+license: perl
+distribution_type: module
+requires:
+  Email::FolderType: 0
+  Email::Simple: 0.18
+  Test::More: 0
+recommends: {}
+build_requires: {}
+conflicts: {}
+provides:
+  Email::Folder:
+    file: lib/Email/Folder.pm
+    version: 0.1
+  Email::Folder::Maildir:
+    file: lib/Email/Folder/Maildir.pm
+    version: ~
+  Email::Folder::Mbox:
+    file: lib/Email/Folder/Mbox.pm
+    version: ~
+generated_by: Module::Build version 0.18
