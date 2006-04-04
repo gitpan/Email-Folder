@@ -5,7 +5,7 @@ use Email::Simple;
 use Email::FolderType qw/folder_type/;
 
 use vars qw($VERSION);
-$VERSION = "0.84";
+$VERSION = "0.85";
 
 =head1 NAME
 
@@ -131,7 +131,7 @@ Richard Clamp <richardc@unixbeard.net>
 
 =head1 COPYING
 
-Copyright 2003, Simon Wistow
+Copyright 2006, Simon Wistow
 
 Distributed under the same terms as Perl itself.
 

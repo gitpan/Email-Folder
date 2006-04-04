@@ -111,10 +111,11 @@ sub _open_it {
 }
 
 sub _get_fh {
-	my $self = shift;
-	my $file = shift;
-	my $fh = IO::File->new($file) or croak "Cannot open $file";
-	return $fh;
+    my $self = shift;
+    my $file = shift;
+    my $fh = IO::File->new($file) or croak "Cannot open $file";
+    binmode($fh);
+    return $fh;
 }
 
 use constant debug => 0;
@@ -131,6 +132,7 @@ sub next_message {
     my $inheaders = 1;
     ++$count;
     print "$count starting scanning at line $.\n" if debug;
+    local $_;
     while (<$fh>) {
         if ($_ eq $/ && $inheaders) { # end of headers
             print "$count end of headers at line $.\n" if debug;
