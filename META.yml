@@ -1,14 +1,15 @@
 --- #YAML:1.0
 name:                Email-Folder
-version:             0.853
+version:             0.854
 abstract:            ~
 license:             perl
-generated_by:        ExtUtils::MakeMaker version 6.32
+author:              ~
+generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
     Email::FolderType:             0.6
     Email::Simple:                 0
     Test::More:                    0.47
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
-    version: 1.2
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
