@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Folder::Ezmlm;
 {
-  $Email::Folder::Ezmlm::VERSION = '0.856';
+  $Email::Folder::Ezmlm::VERSION = '0.857';
 }
 # ABSTRACT: reads raw RFC822 mails from an ezmlm archive
 use Carp;
@@ -42,7 +42,7 @@ Email::Folder::Ezmlm - reads raw RFC822 mails from an ezmlm archive
 
 =head1 VERSION
 
-version 0.856
+version 0.857
 
 =head1 AUTHORS
 

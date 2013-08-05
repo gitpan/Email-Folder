@@ -3,7 +3,7 @@ use warnings;
 # ABSTRACT: read all the messages from a folder as Email::Simple objects
 package Email::Folder;
 {
-  $Email::Folder::VERSION = '0.856';
+  $Email::Folder::VERSION = '0.857';
 }
 use Carp;
 use Email::Simple;
@@ -78,7 +78,7 @@ Email::Folder - read all the messages from a folder as Email::Simple objects
 
 =head1 VERSION
 
-version 0.856
+version 0.857
 
 =head1 SYNOPSIS
 

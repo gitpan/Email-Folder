@@ -29,7 +29,7 @@ resources:
   bugtracker: https://github.com/rjbs/Email-Folder/issues
   homepage: https://github.com/rjbs/Email-Folder
   repository: https://github.com/rjbs/Email-Folder.git
-version: 0.856
+version: 0.857
 x_Dist_Zilla:
   perl:
     version: 5.019002
