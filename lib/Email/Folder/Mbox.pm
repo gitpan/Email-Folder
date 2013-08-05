@@ -1,88 +1,15 @@
-package Email::Folder::Mbox;
 use strict;
+use warnings;
+package Email::Folder::Mbox;
+{
+  $Email::Folder::Mbox::VERSION = '0.856';
+}
+# ABSTRACT: reads raw RFC822 mails from an mbox file
 use Carp;
 use IO::File;
 use Email::Folder::Reader;
-use base 'Email::Folder::Reader';
+use parent 'Email::Folder::Reader';
 
-=head1 NAME
-
-Email::Folder::Mbox - reads raw RFC822 mails from an mbox file
-
-=head1 SYNOPSIS
-
-This isa Email::Folder::Reader - read about its API there.
-
-=head1 DESCRIPTION
-
-Does exactly what it says on the tin - fetches raw RFC822 mails from an
-mbox.
-
-The mbox format is described at http://www.qmail.org/man/man5/mbox.html
-
-We attempt to read an mbox as through it's the mboxcl2 variant,
-falling back to regular mbox mode if there is no C<Content-Length>
-header to be found.
-
-=head2 OPTIONS
-
-The new constructor takes extra options.
-
-=over
-
-=item C<eol>
-
-This indicates what the line-ending style is to be.  The default is
-C<"\n">, but for handling files with mac line-endings you would want
-to specify C<eol =E<gt> "\x0d">
-
-=item C<jwz_From_>
-
-The value is taken as a boolean that governs what is used match as a
-message seperator.
-
-If false we use the mutt style
-
- /^From \S+\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
- /^From (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/;
-
-If true we use
-
- /^From /
-
-In deference to this extract from L<http://www.jwz.org/doc/content-length.html>
-
- Essentially the only safe way to parse that file format is to
- consider all lines which begin with the characters ``From ''
- (From-space), which are preceded by a blank line or
- beginning-of-file, to be the division between messages.  That is, the
- delimiter is "\n\nFrom .*\n" except for the very first message in the
- file, where it is "^From .*\n".
-
- Some people will tell you that you should do stricter parsing on
- those lines: check for user names and dates and so on.  They are
- wrong.  The random crap that has traditionally been dumped into that
- line is without bound; comparing the first five characters is the
- only safe and portable thing to do. Usually, but not always, the next
- token on the line after ``From '' will be a user-id, or email
- address, or UUCP path, and usually the next thing on the line will be
- a date specification, in some format, and usually there's nothing
- after that.  But you can't rely on any of this.
-
-Defaults to false.
-
-=item C<seek_to>
-
-Seek to an offset when opening the mbox.  When used in combination with
-->tell you may be able to resume reading, with a trailing wind.
-
-=item C<tell>
-
-This returns the current filehandle position in the mbox.
-
-=back
-
-=cut
 
 sub defaults {
     ( eol => "\n")
@@ -145,6 +72,7 @@ sub next_message {
             # look for a content length header, and try to use that
             if ($mail =~ m/^Content-Length: (\d+)$/mi) {
                 $mail .= $prev;
+                $prev = '';
                 my $length = $1;
                 print " Content-Length: $length\n" if debug;
                 my $read = '';
@@ -165,6 +93,7 @@ sub next_message {
             # much the same, but with Lines:
             if ($mail =~ m/^Lines: (\d+)$/mi) {
                 $mail .= $prev;
+                $prev = '';
                 my $lines = $1;
                 print " Lines: $lines\n" if debug;
                 my $read = '';
@@ -216,23 +145,108 @@ sub tell {
 
 __END__
 
+=pod
+
+=head1 NAME
+
+Email::Folder::Mbox - reads raw RFC822 mails from an mbox file
+
+=head1 VERSION
+
+version 0.856
+
+=head1 SYNOPSIS
+
+This isa Email::Folder::Reader - read about its API there.
+
+=head1 DESCRIPTION
+
+Does exactly what it says on the tin - fetches raw RFC822 mails from an
+mbox.
+
+The mbox format is described at http://www.qmail.org/man/man5/mbox.html
+
+We attempt to read an mbox as through it's the mboxcl2 variant,
+falling back to regular mbox mode if there is no C<Content-Length>
+header to be found.
+
+=head2 OPTIONS
+
+The new constructor takes extra options.
+
+=over
+
+=item C<eol>
+
+This indicates what the line-ending style is to be.  The default is
+C<"\n">, but for handling files with mac line-endings you would want
+to specify C<eol =E<gt> "\x0d">
+
+=item C<jwz_From_>
+
+The value is taken as a boolean that governs what is used match as a
+message seperator.
+
+If false we use the mutt style
+
+ /^From \S+\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/
+ /^From (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/;
+
+If true we use
+
+ /^From /
+
+In deference to this extract from L<http://www.jwz.org/doc/content-length.html>
+
+  Essentially the only safe way to parse that file format is to
+  consider all lines which begin with the characters ``From ''
+  (From-space), which are preceded by a blank line or
+  beginning-of-file, to be the division between messages.  That is, the
+  delimiter is "\n\nFrom .*\n" except for the very first message in the
+  file, where it is "^From .*\n".
+
+  Some people will tell you that you should do stricter parsing on
+  those lines: check for user names and dates and so on.  They are
+  wrong.  The random crap that has traditionally been dumped into that
+  line is without bound; comparing the first five characters is the
+  only safe and portable thing to do. Usually, but not always, the next
+  token on the line after ``From '' will be a user-id, or email
+  address, or UUCP path, and usually the next thing on the line will be
+  a date specification, in some format, and usually there's nothing
+  after that.  But you can't rely on any of this.
+
+Defaults to false.
+
+=item C<seek_to>
+
+Seek to an offset when opening the mbox.  When used in combination with
+->tell you may be able to resume reading, with a trailing wind.
+
+=item C<tell>
+
+This returns the current filehandle position in the mbox.
+
+=back
+
 =head1 AUTHORS
+
+=over 4
+
+=item *
 
 Simon Wistow <simon@thegestalt.org>
 
+=item *
+
 Richard Clamp <richardc@unixbeard.net>
 
-=head1 COPYING
+=back
 
-Copyright 2003, Simon Wistow
+=head1 COPYRIGHT AND LICENSE
 
-Distributed under the same terms as Perl itself.
+This software is copyright (c) 2006 by Simon Wistow.
 
-This software is under no warranty and will probably ruin your life,
-kill your friends, burn your house and bring about the apocolapyse.
-
-=head1 SEE ALSO
-
-L<Email::LocalDelivery>, L<Email::Folder>
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

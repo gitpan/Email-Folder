@@ -1,26 +1,15 @@
-package Email::Folder::Maildir;
 use strict;
+use warnings;
+package Email::Folder::Maildir;
+{
+  $Email::Folder::Maildir::VERSION = '0.856';
+}
+# ABSTRACT: reads raw RFC822 mails from a maildir
 use Carp;
 use IO::File;
 use Email::Folder::Reader;
-use base 'Email::Folder::Reader';
+use parent 'Email::Folder::Reader';
 
-=head1 NAME
-
-Email::Folder::Maildir - reads raw RFC822 mails from a maildir
-
-=head1 SYNOPSIS
-
-This isa Email::Folder::Reader - read about its API there.
-
-=head1 DESCRIPTION
-
-Does exactly what it says on the tin - fetches raw RFC822 mails from a
-maildir.
-
-The maildir format is described at http://www.qmail.org/man/man5/maildir.html
-
-=cut
 
 sub _what_is_there {
     my $self = shift;
@@ -59,20 +48,47 @@ sub next_message {
 
 __END__
 
-=head1 AUTHOR
+=pod
+
+=head1 NAME
+
+Email::Folder::Maildir - reads raw RFC822 mails from a maildir
+
+=head1 VERSION
+
+version 0.856
+
+=head1 SYNOPSIS
+
+This isa Email::Folder::Reader - read about its API there.
+
+=head1 DESCRIPTION
+
+Does exactly what it says on the tin - fetches raw RFC822 mails from a
+maildir.
+
+The maildir format is described at
+L<http://www.qmail.org/man/man5/maildir.html>
+
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Simon Wistow <simon@thegestalt.org>
 
-=head1 COPYING
+=item *
 
-Copyright 2003, Simon Wistow
+Richard Clamp <richardc@unixbeard.net>
 
-Distributed under the same terms as Perl itself.
+=back
 
-This software is under no warranty and will probably ruin your life, kill your friends, burn your house and brin$
+=head1 COPYRIGHT AND LICENSE
 
-=head1 SEE ALSO
+This software is copyright (c) 2006 by Simon Wistow.
 
-L<Email::LocalDelivery>, L<Email::Folder>
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

@@ -1,10 +1,49 @@
-package Email::Folder::Reader;
 use strict;
+use warnings;
+package Email::Folder::Reader;
+{
+  $Email::Folder::Reader::VERSION = '0.856';
+}
+# ABSTRACT: reads raw RFC822 mails from a box
 use Carp;
+
+
+sub new {
+    my $class = shift;
+    my $file  = shift || croak "You must pass a filename";
+    bless { eval { $class->defaults },
+            @_,
+            _file => $file }, $class;
+}
+
+
+sub next_message {
+}
+
+
+sub messages {
+    my $self = shift;
+
+    my @messages;
+    while (my $message = $self->next_message) {
+        push @messages, $message;
+    }
+    return @messages;
+}
+
+1;
+
+__END__
+
+=pod
 
 =head1 NAME
 
 Email::Folder::Reader - reads raw RFC822 mails from a box
+
+=head1 VERSION
+
+version 0.856
 
 =head1 SYNOPSIS
 
@@ -22,64 +61,37 @@ or, as an iterator
 
 =head1 METHODS
 
-=head2 ->new($filename, %options)
+=head2 new($filename, %options)
 
 your standard class-method constructor
-
-=cut
-
-sub new {
-    my $class = shift;
-    my $file  = shift || croak "You must pass a filename";
-    bless { eval { $class->defaults },
-            @_,
-            _file => $file }, $class;
-}
 
 =head2 ->next_message
 
 returns the next message from the box, or false if there are no more
 
-=cut
-
-sub next_message {
-}
-
 =head2 ->messages
 
 Returns all the messages in a box
 
-=cut
+=head1 AUTHORS
 
-sub messages {
-    my $self = shift;
+=over 4
 
-    my @messages;
-    while (my $message = $self->next_message) {
-        push @messages, $message;
-    }
-    return @messages;
-}
-
-1;
-
-__END__
-
-=head1 AUTHOR
+=item *
 
 Simon Wistow <simon@thegestalt.org>
 
-=head1 COPYING
+=item *
 
-Copyright 2003, Simon Wistow
+Richard Clamp <richardc@unixbeard.net>
 
-Distributed under the same terms as Perl itself.
+=back
 
-This software is under no warranty and will probably ruin your life,
-kill your friends, burn your house and bring about the apocolapyse.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 SEE ALSO
+This software is copyright (c) 2006 by Simon Wistow.
 
-L<Email::LocalDelivery>, L<Email::Folder>
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

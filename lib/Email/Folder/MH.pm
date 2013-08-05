@@ -1,23 +1,15 @@
-package Email::Folder::MH;
 use strict;
+use warnings;
+package Email::Folder::MH;
+{
+  $Email::Folder::MH::VERSION = '0.856';
+}
+# ABSTRACT: reads raw RFC822 mails from an mh folder
 use Carp;
 use IO::File;
 use Email::Folder::Reader;
-use base 'Email::Folder::Reader';
+use parent 'Email::Folder::Reader';
 
-=head1 NAME
-
-Email::Folder::MH - reads raw RFC822 mails from an mh folder
-
-=head1 SYNOPSIS
-
-This isa Email::Folder::Reader - read about its API there.
-
-=head1 DESCRIPTION
-
-It's yet another email folder reader!  It reads MH folders.
-
-=cut
 
 sub _what_is_there {
     my $self = shift;
@@ -29,8 +21,12 @@ sub _what_is_there {
     my @messages;
                 opendir(DIR,"$dir") or croak "Could not open '$dir'";
                 foreach my $file (readdir DIR) {
+                    if ($^O eq 'VMS'){
+                        next unless $file =~ /\A\d+\.\Z/;
+                    } else {
                         next unless $file =~ /\A\d+\Z/;
-                                push @messages, "$dir/$file";
+                    }
+                    push @messages, "$dir/$file";
                 }
 
     $self->{_messages} = \@messages;
@@ -50,20 +46,43 @@ sub next_message {
 
 __END__
 
-=head1 AUTHOR
+=pod
 
-Ricardo SIGNES <C<rjbs@cpan.org>>
+=head1 NAME
 
-This code is just Simon Wistow's Email::Folder::Maildir adapted for C<mh>.
+Email::Folder::MH - reads raw RFC822 mails from an mh folder
 
-=head1 COPYING
+=head1 VERSION
 
-Copyright 2004, Simon Wistow
+version 0.856
 
-Distributed under the same terms as Perl itself.
+=head1 SYNOPSIS
 
-=head1 SEE ALSO
+This isa Email::Folder::Reader - read about its API there.
 
-L<Email::LocalDelivery>, L<Email::Folder>
+=head1 DESCRIPTION
+
+It's yet another email folder reader!  It reads MH folders.
+
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Simon Wistow <simon@thegestalt.org>
+
+=item *
+
+Richard Clamp <richardc@unixbeard.net>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2006 by Simon Wistow.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

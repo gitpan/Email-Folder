@@ -1,8 +1,13 @@
-package Email::Folder::Ezmlm;
 use strict;
+use warnings;
+package Email::Folder::Ezmlm;
+{
+  $Email::Folder::Ezmlm::VERSION = '0.856';
+}
+# ABSTRACT: reads raw RFC822 mails from an ezmlm archive
 use Carp;
 use Email::Folder::Maildir;
-use base 'Email::Folder::Maildir';
+use parent 'Email::Folder::Maildir';
 
 # we're a little complicit, just redefining an internal method, but
 # that's fine, we maintain both piles :)
@@ -26,3 +31,38 @@ sub _what_is_there {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Email::Folder::Ezmlm - reads raw RFC822 mails from an ezmlm archive
+
+=head1 VERSION
+
+version 0.856
+
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Simon Wistow <simon@thegestalt.org>
+
+=item *
+
+Richard Clamp <richardc@unixbeard.net>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2006 by Simon Wistow.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
