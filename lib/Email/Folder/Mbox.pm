@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Folder::Mbox;
 {
-  $Email::Folder::Mbox::VERSION = '0.857';
+  $Email::Folder::Mbox::VERSION = '0.858';
 }
 # ABSTRACT: reads raw RFC822 mails from an mbox file
 use Carp;
@@ -147,13 +147,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Email::Folder::Mbox - reads raw RFC822 mails from an mbox file
 
 =head1 VERSION
 
-version 0.857
+version 0.858
 
 =head1 SYNOPSIS
 
@@ -185,7 +187,7 @@ to specify C<eol =E<gt> "\x0d">
 =item C<jwz_From_>
 
 The value is taken as a boolean that governs what is used match as a
-message seperator.
+message separator.
 
 If false we use the mutt style
 

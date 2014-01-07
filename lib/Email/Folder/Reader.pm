@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Folder::Reader;
 {
-  $Email::Folder::Reader::VERSION = '0.857';
+  $Email::Folder::Reader::VERSION = '0.858';
 }
 # ABSTRACT: reads raw RFC822 mails from a box
 use Carp;
@@ -37,13 +37,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Email::Folder::Reader - reads raw RFC822 mails from a box
 
 =head1 VERSION
 
-version 0.857
+version 0.858
 
 =head1 SYNOPSIS
 

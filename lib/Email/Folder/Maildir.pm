@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Folder::Maildir;
 {
-  $Email::Folder::Maildir::VERSION = '0.857';
+  $Email::Folder::Maildir::VERSION = '0.858';
 }
 # ABSTRACT: reads raw RFC822 mails from a maildir
 use Carp;
@@ -50,13 +50,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Email::Folder::Maildir - reads raw RFC822 mails from a maildir
 
 =head1 VERSION
 
-version 0.857
+version 0.858
 
 =head1 SYNOPSIS
 

@@ -3,7 +3,7 @@ use warnings;
 # ABSTRACT: read all the messages from a folder as Email::Simple objects
 package Email::Folder;
 {
-  $Email::Folder::VERSION = '0.857';
+  $Email::Folder::VERSION = '0.858';
 }
 use Carp;
 use Email::Simple;
@@ -72,13 +72,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Email::Folder - read all the messages from a folder as Email::Simple objects
 
 =head1 VERSION
 
-version 0.857
+version 0.858
 
 =head1 SYNOPSIS
 
@@ -111,7 +113,7 @@ false at the end of the folder
 
 Takes a raw RFC822 message and blesses it into a class.
 
-By default this is an Email::Simple object but can easily be overriden
+By default this is an Email::Simple object but can easily be overridden
 in a subclass.
 
 For example, this simple subclass just returns the raw rfc822 messages,
