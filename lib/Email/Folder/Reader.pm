@@ -1,12 +1,31 @@
 use strict;
 use warnings;
 package Email::Folder::Reader;
-{
-  $Email::Folder::Reader::VERSION = '0.858';
-}
 # ABSTRACT: reads raw RFC822 mails from a box
+$Email::Folder::Reader::VERSION = '0.859';
 use Carp;
 
+#pod =head1 SYNOPSIS
+#pod
+#pod  use Email::Folder::Reader;
+#pod  my $box = Email::Folder::Reader->new('somebox');
+#pod  print $box->messages;
+#pod
+#pod or, as an iterator
+#pod
+#pod  use Email::Folder::Reader;
+#pod  my $box = Email::Folder::Reader->new('somebox');
+#pod  while ( my $mail = $box->next_message ) {
+#pod      print $mail;
+#pod  }
+#pod
+#pod =head1 METHODS
+#pod
+#pod =head2 new($filename, %options)
+#pod
+#pod your standard class-method constructor
+#pod
+#pod =cut
 
 sub new {
     my $class = shift;
@@ -16,10 +35,20 @@ sub new {
             _file => $file }, $class;
 }
 
+#pod =head2 ->next_message
+#pod
+#pod returns the next message from the box, or false if there are no more
+#pod
+#pod =cut
 
 sub next_message {
 }
 
+#pod =head2 ->messages
+#pod
+#pod Returns all the messages in a box
+#pod
+#pod =cut
 
 sub messages {
     my $self = shift;
@@ -45,7 +74,7 @@ Email::Folder::Reader - reads raw RFC822 mails from a box
 
 =head1 VERSION
 
-version 0.858
+version 0.859
 
 =head1 SYNOPSIS
 

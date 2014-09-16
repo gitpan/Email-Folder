@@ -1,14 +1,30 @@
 use strict;
 use warnings;
-# ABSTRACT: read all the messages from a folder as Email::Simple objects
 package Email::Folder;
-{
-  $Email::Folder::VERSION = '0.858';
-}
+# ABSTRACT: read all the messages from a folder as Email::Simple objects
+$Email::Folder::VERSION = '0.859';
 use Carp;
 use Email::Simple;
 use Email::FolderType 0.6 qw/folder_type/;
 
+#pod =head1 SYNOPSIS
+#pod
+#pod  use Email::Folder;
+#pod
+#pod  my $folder = Email::Folder->new("some_file");
+#pod
+#pod  print join "\n", map { $_->header("Subject") } $folder->messages;
+#pod
+#pod =head1 METHODS
+#pod
+#pod =head2 new($folder, %options)
+#pod
+#pod Takes the name of a folder, and a hash of options
+#pod
+#pod If a 'reader' option is passed in then that is
+#pod used as the class to read in messages with.
+#pod
+#pod =cut
 
 sub new {
     my $class  = shift;
@@ -29,6 +45,12 @@ sub new {
     return bless \%self, $class;
 }
 
+#pod =head2 messages
+#pod
+#pod Returns a list containing all of the messages in the folder.  Can only
+#pod be called once as it drains the iterator.
+#pod
+#pod =cut
 
 sub messages {
     my $self = shift;
@@ -42,6 +64,12 @@ sub messages {
 }
 
 
+#pod =head2 next_message
+#pod
+#pod acts as an iterator.  reads the next message from a folder.  returns
+#pod false at the end of the folder
+#pod
+#pod =cut
 
 sub next_message {
     my $self = shift;
@@ -51,6 +79,22 @@ sub next_message {
 }
 
 
+#pod =head2 bless_message($message)
+#pod
+#pod Takes a raw RFC822 message and blesses it into a class.
+#pod
+#pod By default this is an Email::Simple object but can easily be overridden
+#pod in a subclass.
+#pod
+#pod For example, this simple subclass just returns the raw rfc822 messages,
+#pod and exposes the speed of the parser.
+#pod
+#pod  package Email::RawFolder;
+#pod  use base 'Email::Folder';
+#pod  sub bless_message { $_[1] };
+#pod  1;
+#pod
+#pod =cut
 
 sub bless_message {
     my $self    = shift;
@@ -60,6 +104,11 @@ sub bless_message {
 }
 
 
+#pod =head2 reader
+#pod
+#pod read-only accessor to the underlying Email::Reader subclass instance
+#pod
+#pod =cut
 
 sub reader {
     my $self = shift;
@@ -67,6 +116,12 @@ sub reader {
 }
 
 1;
+
+#pod =head1 SEE ALSO
+#pod
+#pod L<Email::LocalDelivery>, L<Email::FolderType>, L<Email::Simple>
+#pod
+#pod =cut
 
 __END__
 
@@ -80,7 +135,7 @@ Email::Folder - read all the messages from a folder as Email::Simple objects
 
 =head1 VERSION
 
-version 0.858
+version 0.859
 
 =head1 SYNOPSIS
 

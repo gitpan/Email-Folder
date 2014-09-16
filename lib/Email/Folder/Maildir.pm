@@ -1,15 +1,26 @@
 use strict;
 use warnings;
 package Email::Folder::Maildir;
-{
-  $Email::Folder::Maildir::VERSION = '0.858';
-}
 # ABSTRACT: reads raw RFC822 mails from a maildir
+$Email::Folder::Maildir::VERSION = '0.859';
 use Carp;
 use IO::File;
 use Email::Folder::Reader;
 use parent 'Email::Folder::Reader';
 
+#pod =head1 SYNOPSIS
+#pod
+#pod This isa Email::Folder::Reader - read about its API there.
+#pod
+#pod =head1 DESCRIPTION
+#pod
+#pod Does exactly what it says on the tin - fetches raw RFC822 mails from a
+#pod maildir.
+#pod
+#pod The maildir format is described at
+#pod L<http://www.qmail.org/man/man5/maildir.html>
+#pod
+#pod =cut
 
 sub _what_is_there {
     my $self = shift;
@@ -58,7 +69,7 @@ Email::Folder::Maildir - reads raw RFC822 mails from a maildir
 
 =head1 VERSION
 
-version 0.858
+version 0.859
 
 =head1 SYNOPSIS
 

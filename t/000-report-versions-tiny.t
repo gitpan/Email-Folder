@@ -51,7 +51,7 @@ sub pmver {
 eval { $v .= pmver('Carp','any version') };
 eval { $v .= pmver('Email::FolderType','0.6') };
 eval { $v .= pmver('Email::Simple','any version') };
-eval { $v .= pmver('ExtUtils::MakeMaker','6.30') };
+eval { $v .= pmver('ExtUtils::MakeMaker','any version') };
 eval { $v .= pmver('IO::File','any version') };
 eval { $v .= pmver('Test::More','0.96') };
 eval { $v .= pmver('constant','any version') };

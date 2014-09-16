@@ -1,15 +1,22 @@
 use strict;
 use warnings;
 package Email::Folder::MH;
-{
-  $Email::Folder::MH::VERSION = '0.858';
-}
 # ABSTRACT: reads raw RFC822 mails from an mh folder
+$Email::Folder::MH::VERSION = '0.859';
 use Carp;
 use IO::File;
 use Email::Folder::Reader;
 use parent 'Email::Folder::Reader';
 
+#pod =head1 SYNOPSIS
+#pod
+#pod This isa Email::Folder::Reader - read about its API there.
+#pod
+#pod =head1 DESCRIPTION
+#pod
+#pod It's yet another email folder reader!  It reads MH folders.
+#pod
+#pod =cut
 
 sub _what_is_there {
     my $self = shift;
@@ -56,7 +63,7 @@ Email::Folder::MH - reads raw RFC822 mails from an mh folder
 
 =head1 VERSION
 
-version 0.858
+version 0.859
 
 =head1 SYNOPSIS
 

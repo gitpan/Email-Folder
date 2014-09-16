@@ -1,10 +1,8 @@
 use strict;
 use warnings;
 package Email::Folder::Ezmlm;
-{
-  $Email::Folder::Ezmlm::VERSION = '0.858';
-}
 # ABSTRACT: reads raw RFC822 mails from an ezmlm archive
+$Email::Folder::Ezmlm::VERSION = '0.859';
 use Carp;
 use Email::Folder::Maildir;
 use parent 'Email::Folder::Maildir';
@@ -44,7 +42,7 @@ Email::Folder::Ezmlm - reads raw RFC822 mails from an ezmlm archive
 
 =head1 VERSION
 
-version 0.858
+version 0.859
 
 =head1 AUTHORS
 
